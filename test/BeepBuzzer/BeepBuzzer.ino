@@ -1,6 +1,6 @@
-#define BUZZER_PIN 51 // Pin del buzzer en Arduino Mega
+#define BUZZER_PIN 51 // Buzzer pin on Arduino Mega
 
-// Define las notas musicales y sus frecuencias en Hz
+// Define musical notes and their frequencies in Hz
 #define NOTE_C4 262
 #define NOTE_D4 294
 #define NOTE_E4 330
@@ -15,33 +15,33 @@
 #define NOTE_G5 784
 #define NOTE_A5 880
 
-// Estructura para representar una nota con duración
+// Structure to represent a note with duration
 struct Note {
   int pitch;
   int duration;
 };
 
-// Función para reproducir una nota con una duración específica
+// Function to play a note with a specific duration
 void playNote(int note, int duration) {
   tone(BUZZER_PIN, note, duration);
-  delay(duration + 10); // Espera hasta que termine la nota antes de pasar a la siguiente
+  delay(duration + 10); // Wait until the note finishes before moving to the next one
 }
 
-// Función para reproducir una secuencia de notas
+// Function to play a sequence of notes
 void playMelody(Note melody[], int length) {
   for (int i = 0; i < length; i++) {
     playNote(melody[i].pitch, melody[i].duration);
   }
 }
 
-// Función principal
+// Setup function
 void setup() {
   pinMode(BUZZER_PIN, OUTPUT);
 }
 
-// Función de bucle principal
+// Main loop function
 void loop() {
-    // Ejemplo: tocar una secuencia de notas
+    // Example: play a sequence of notes
     Note melody[] = {
       {NOTE_C4, 500},
       {NOTE_D4, 500},
@@ -53,11 +53,11 @@ void loop() {
       {NOTE_C5, 500}
     };
     
-    // Calcular la longitud de la melodía
+    // Calculate the length of the melody
     int length = sizeof(melody) / sizeof(melody[0]);
     
-    // Reproducir la melodía
+    // Play the melody
     playMelody(melody, length);
   
-  // Hacer alguna otra tarea en el bucle principal si es necesario
+  // Do some other task in the main loop if necessary
 }

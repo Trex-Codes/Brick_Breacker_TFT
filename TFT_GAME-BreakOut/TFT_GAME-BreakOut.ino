@@ -7,10 +7,10 @@
 #define LCD_RD A0
 #define LCD_RESET A4
 
-#define NOTE_C4  262  // Definir la frecuencia de la nota C4 en Hz
-#define NOTE_G3  196  // Definir la frecuencia de la nota G3 en Hz
-#define NOTE_A3  220  // Definir la frecuencia de la nota A3 en Hz
-#define NOTE_B3  247  // Definir la frecuencia de la nota B3 en Hz
+#define NOTE_C4  262  // Define the frequency of the C4 note in Hz
+#define NOTE_G3  196  // Define the frequency of the G3 note in Hz
+#define NOTE_A3  220  // Define the frequency of the A3 note in Hz
+#define NOTE_B3  247  // Define the frequency of the B3 note in Hz
 
 #define NOTE_C4 262
 #define NOTE_D4 294
@@ -95,88 +95,88 @@ const int BUZZER_PIN = 51;
 MCUFRIEND_kbv tft(LCD_CS, LCD_CD, LCD_WR, LCD_RD, LCD_RESET);
 
 const int BALL_SIZE = 10;
-const int BAR_WIDTH = 60;  // Ancho original de la barra
-const int BAR_HEIGHT = 8;  // Altura de la barra
-const int BAR_Y = 220;     // Posición vertical de la barra
+const int BAR_WIDTH = 60;  // Original width of the bar
+const int BAR_HEIGHT = 8;  // Height of the bar
+const int BAR_Y = 220;     // Vertical position of the bar
 
-const int NUM_BLOCKS = 78;    // Aumenta el número de bloques
-const int BLOCK_WIDTH = 20;   // Reducir el ancho de los bloques
-const int BLOCK_HEIGHT = 10;  // Reducir la altura de los bloques
-const int BLOCK_SPACING = 5;  // Espacio entre bloques
+const int NUM_BLOCKS = 78;    // Increase the number of blocks
+const int BLOCK_WIDTH = 20;   // Reduce the width of the blocks
+const int BLOCK_HEIGHT = 10;  // Reduce the height of the blocks
+const int BLOCK_SPACING = 5;  // Space between blocks
 
 int ballX, ballY;
-int ballVelX = 4;  // Incrementar la velocidad de la pelota en X
-int ballVelY = 4;  // Incrementar la velocidad de la pelota en Y
+int ballVelX = 4;  // Increase the ball speed in X
+int ballVelY = 4;  // Increase the ball speed in Y
 
-int barX;  // Posición horizontal de la barra
+int barX;  // Horizontal position of the bar
 
 const int JOYSTICK_X_PIN = A8;
 const int JOYSTICK_Y_PIN = A9;
-const int JOYSTICK_BUTTON_PIN = 53; // Pin del botón del joystick
+const int JOYSTICK_BUTTON_PIN = 53; // Joystick button pin
 const int JOYSTICK_THRESHOLD = 50;
-
 struct Block {
   int x, y;
   bool active;
-  uint16_t color;  // Nuevo campo para el color del bloque
+  uint16_t color;  // New field for the block's color
 };
 
 Block blocks[NUM_BLOCKS];
 
-int attemptsLeft = 3;  // Intentos restantes antes de borrar los bloques
-int score = 0;         // Variable para almacenar el puntaje
+int attemptsLeft = 3;  // Remaining attempts before clearing the blocks
+int score = 0;         // Variable to store the score
 
-bool gameStarted = false; // Variable para controlar si el juego ha comenzado
+bool gameStarted = false; // Variable to control if the game has started
 
 void setup() {
+
   tft.reset();
   uint16_t ID = tft.readID();
   tft.begin(ID);
   tft.setRotation(1);
 
-  // Inicialmente, muestra una pantalla negra con el texto "Start" centrado
-  tft.fillScreen(0x0000);  // Color negro
+  // Initially, display a black screen with the text "Start" centered
+  tft.fillScreen(0x0000);  // Black color
 
-  // Calcula la posición para centrar el texto "Breakout"
+  // Calculate the position to center the "Breakout" text
   String title = "Breakout";
-  int textWidth = title.length() * 12; // Ancho aproximado del texto "Breakout" en píxeles (cada caracter tiene un ancho aproximado de 12 píxeles)
-  int textHeight = 16; // Altura aproximada del texto "Breakout" en píxeles
-  int startX = (tft.width() - textWidth) / 2; // Posición X para centrar horizontalmente
-  int startY = (tft.height() - textHeight) / 2; // Posición Y para centrar verticalmente
+  int textWidth = title.length() * 12; // Approximate width of the "Breakout" text in pixels (each character is roughly 12 pixels wide)
+  int textHeight = 16; // Approximate height of the "Breakout" text in pixels
+  int startX = (tft.width() - textWidth) / 2; // X position to center horizontally
+  int startY = (tft.height() - textHeight) / 2; // Y position to center vertically
 
-  // Muestra el texto "Breakout" centrado en la pantalla
-  tft.setTextColor(0xFFFF); // Color del texto blanco
-  tft.setTextSize(2); // Tamaño del texto
+  // Display the "Breakout" text centered on the screen
+  tft.setTextColor(0xFFFF); // White text color
+  tft.setTextSize(2); // Text size
   tft.setCursor(startX, startY);
   tft.print(title);
 
-  // Calcula la posición para centrar el texto "Press to Start"
-  int pressTextWidth = 90; // Ancho aproximado del texto "Press to Start" en píxeles
-  int pressTextHeight = 8; // Altura aproximada del texto "Press to Start" en píxeles
-  int pressStartX = (tft.width() - pressTextWidth) / 2; // Posición X para centrar horizontalmente
-  int pressStartY = startY + textHeight + 10; // Posición Y debajo de "Start"
+  // Calculate the position to center the "Press to Start" text
+  int pressTextWidth = 90; // Approximate width of the "Press to Start" text in pixels
+  int pressTextHeight = 8; // Approximate height of the "Press to Start" text in pixels
+  int pressStartX = (tft.width() - pressTextWidth) / 2; // X position to center horizontally
+  int pressStartY = startY + textHeight + 10; // Y position below "Start"
 
-  // Muestra el texto "Press to Start" centrado en la pantalla, debajo de "Start"
-  tft.setTextColor(0xFFE0); // Color del texto amarillo
-  tft.setTextSize(1); // Tamaño del texto más pequeño
-  tft.setCursor(pressStartX, pressStartY); // Ajusta la posición vertical debajo de "Start"
+  // Display the "Press to Start" text centered on the screen, below "Start"
+  tft.setTextColor(0xFFE0); // Yellow text color
+  tft.setTextSize(1); // Smaller text size
+  tft.setCursor(pressStartX, pressStartY); // Adjust vertical position below "Start"
   tft.print("Press to Start");
 
-  // Configura el pin del botón del joystick como entrada
+  // Set the joystick button pin as input
   pinMode(JOYSTICK_BUTTON_PIN, INPUT_PULLUP);
 }
 
 void loop() {
-  // Si el juego no ha empezado y se presiona el botón del joystick, inicia el juego
+  // If the game hasn't started and the joystick button is pressed, start the game
   if (!gameStarted && digitalRead(JOYSTICK_BUTTON_PIN) == LOW) {
     startGame();
   }
 
-  // Si el juego ha empezado, ejecuta el código del juego
+  // If the game has started, run the game code
   if (gameStarted) {
     playGame();
   } else {
-    // Muestra el texto "Start" en la pantalla
+    // Display the "Start" text on the screen
     displayStartText();
   }
 }
@@ -192,39 +192,39 @@ void startGame() {
   gameStarted = true; // Marca el juego como iniciado
 }
 
-// Función para jugar el juego
+// Function to play the game
 void playGame() {
   int joystickX = analogRead(JOYSTICK_X_PIN);
 
-  // Mover la barra (paleta) con el joystick
+  // Move the paddle (bar) with the joystick
   if (joystickX < 512 - JOYSTICK_THRESHOLD) {
-    barX -= 5;  // Mover la barra hacia la izquierda
+    barX -= 5;  // Move the paddle to the left
   } else if (joystickX > 512 + JOYSTICK_THRESHOLD) {
-    barX += 5;  // Mover la barra hacia la derecha
+    barX += 5;  // Move the paddle to the right
   }
 
-  // Limitar los límites de la barra
+  // Limit the paddle's boundaries
   if (barX < 0) {
     barX = 0;
   } else if (barX > tft.width() - BAR_WIDTH) {
     barX = tft.width() - BAR_WIDTH;
   }
 
-  // Borra la pelota en su posición anterior
-  tft.fillCircle(ballX, ballY, BALL_SIZE, 0x0000); // Borra la pelota en su posición anterior
+  // Clear the ball from its previous position
+  tft.fillCircle(ballX, ballY, BALL_SIZE, 0x0000); // Clear the ball from its previous position
 
-  // Mover la pelota
+  // Move the ball
   ballX += ballVelX;
   ballY += ballVelY;
 
-  // Dibujar la barra
-  tft.fillRect(0, BAR_Y, tft.width(), BAR_HEIGHT, 0x0000);   // Borra la barra anterior
-  tft.fillRect(barX, BAR_Y, BAR_WIDTH, BAR_HEIGHT, 0xFFE0);  // Dibuja la barra en su nueva posición (color amarillo)
+  // Draw the paddle
+  tft.fillRect(0, BAR_Y, tft.width(), BAR_HEIGHT, 0x0000);   // Clear the previous paddle
+  tft.fillRect(barX, BAR_Y, BAR_WIDTH, BAR_HEIGHT, 0xFFE0);  // Draw the paddle in its new position (yellow color)
 
-  // Dibujar la pelota en su nueva posición
-  tft.fillCircle(ballX, ballY, BALL_SIZE, 0x7FFF); // Dibuja la pelota en su nueva posición (color lightgreen)
+  // Draw the ball in its new position
+  tft.fillCircle(ballX, ballY, BALL_SIZE, 0x7FFF); // Draw the ball in its new position (light green color)
 
-  // Rebotar la pelota cuando alcanza los límites de la pantalla
+  // Bounce the ball when it reaches the screen edges
   if (ballX - BALL_SIZE / 2 <= 0 || ballX + BALL_SIZE / 2 >= tft.width()) {
     ballVelX = -ballVelX;
   }
@@ -232,92 +232,95 @@ void playGame() {
     ballVelY = -ballVelY;
   }
   if (ballY + BALL_SIZE / 2 >= tft.height()) {
-    // Borra la pelota en su posición anterior
+    // Clear the ball from its previous position
     tft.fillCircle(ballX, ballY, BALL_SIZE, 0x0000);
 
-    // Resetear la posición de la pelota cuando toca la parte inferior de la pantalla
+    // Reset the ball's position when it touches the bottom of the screen
     ballX = tft.width() / 2;
     ballY = tft.height() * 0.75;
-    ballVelX = 4;    // Reiniciar la velocidad en X
-    ballVelY = 4;    // Reiniciar la velocidad en Y
-    attemptsLeft--;  // Reducir el número de intentos restantes
+    ballVelX = 4;    // Reset the X velocity
+    ballVelY = 4;    // Reset the Y velocity
+    attemptsLeft--;  // Decrease the number of remaining attempts
 
-    // Dibujar un círculo negro en la posición anterior de la pelota
+    // Draw a black circle in the ball's previous position
     tft.fillCircle(ballX, ballY, BALL_SIZE, 0x0000);
   }
 
-  // Rebotar la pelota si toca la barra
+  // Bounce the ball if it hits the paddle
   if (ballY + BALL_SIZE / 2 >= BAR_Y && ballY - BALL_SIZE / 2 <= BAR_Y + BAR_HEIGHT && ballX + BALL_SIZE / 2 >= barX && ballX - BALL_SIZE / 2 <= barX + BAR_WIDTH) {
     ballVelY = -ballVelY;
   }
 
-  // Verificar colisiones con los bloques
+  // Check for collisions with the blocks
   for (int i = 0; i < NUM_BLOCKS; i++) {
     if (blocks[i].active && ballX + BALL_SIZE / 2 >= blocks[i].x && ballX - BALL_SIZE / 2 <= blocks[i].x + BLOCK_WIDTH && ballY + BALL_SIZE / 2 >= blocks[i].y && ballY - BALL_SIZE / 2 <= blocks[i].y + BLOCK_HEIGHT) {
       blocks[i].active = false;
-      tft.fillRect(blocks[i].x, blocks[i].y, BLOCK_WIDTH, BLOCK_HEIGHT, 0x0000);  // Borra el bloque
+      tft.fillRect(blocks[i].x, blocks[i].y, BLOCK_WIDTH, BLOCK_HEIGHT, 0x0000);  // Clear the block
       ballVelY = -ballVelY;
 
-      score += 5;  // Incrementar el puntaje por cada bloque destruido
-      // Toca una nota en el buzzer
-      playNote(1000, 100); // Frecuencia de 1000 Hz, duración de 100 ms
+      score += 5;  // Increase the score for each destroyed block
+      // Play a note on the buzzer
+      playNote(1000, 100); // Frequency of 1000 Hz, duration of 100 ms
     }
   }
 
-  // Si se agotan los intentos, regenerar los bloques
+  // If attempts run out, regenerate the blocks
   if (attemptsLeft <= 0) {
-    generateBlocks();  // Regenerar bloques
-    attemptsLeft = 3;  // Restablecer el número de intentos
+    generateBlocks();  // Regenerate blocks
+    attemptsLeft = 3;  // Reset the number of attempts
   }
 
-  drawScore();  // Llama a la función para dibujar el puntaje
+  drawScore();  // Call the function to draw the score
 
   delay(10);
 }
 
-// Función para generar bloques
+// Function to generate blocks
 void generateBlocks() {
-  score = 0; // Restablece el puntaje a 0 cuando se regeneran los bloques
+  score = 0; // Reset the score to 0 when regenerating blocks
 
-  // Generar colores aleatorios para cada fila
+  // Generate random colors for each row
   uint16_t colors[NUM_BLOCKS / 13];
   for (int i = 0; i < NUM_BLOCKS / 13; i++) {
-    colors[i] = random(0xFFFF); // Genera un color aleatorio para cada fila
+    colors[i] = random(0xFFFF); // Generate a random color for each row
   }
 
-  // Generar bloques
+  // Generate blocks
   for (int i = 0; i < NUM_BLOCKS; i++) {
-    // Calcular la fila y la columna actual
+    // Calculate the current row and column
     int row = i / 13;
     int col = i % 13;
 
-    // Calcular la posición del bloque
+    // Calculate the block's position
     int x = col * (BLOCK_WIDTH + BLOCK_SPACING) + BLOCK_SPACING;
     int y = row * (BLOCK_HEIGHT + BLOCK_SPACING) + BLOCK_SPACING * 7;
 
-    // Asignar la posición y otras propiedades al bloque
+    // Assign position and other properties to the block
     blocks[i].x = x;
     blocks[i].y = y;
     blocks[i].active = true;
 
-    // Asignar el color de la fila correspondiente al bloque
+    // Assign the row color to the block
     blocks[i].color = colors[row];
 
-    // Dibujar el bloque en la pantalla
+    // Draw the block on the screen
     tft.fillRect(x, y, BLOCK_WIDTH, BLOCK_HEIGHT, blocks[i].color);
   }
 }
 
 void drawScore() {
-  // Borra el área donde se muestra el puntaje
-  tft.fillRect(10, 10, 50, 20, 0x0000);
-  // Establece la posición donde se dibujará el puntaje
+  // Clear the area where the score is displayed by drawing a black rectangle
+  tft.fillRect(10, 10, 50, 20, 0x0000); // Clear a 50x20 area at (10, 10)
+
+  // Set the position where the score will be drawn
   tft.setCursor(10, 10);
-  // Configura el color y el tamaño del texto
-  tft.setTextColor(0xFFFF);
-  tft.setTextSize(2);
-  // Dibuja el puntaje actual
-  tft.print(score);
+
+  // Set the text color to white and the text size to 2
+  tft.setTextColor(0xFFFF);  // White color for the text
+  tft.setTextSize(2);        // Text size set to 2 for better visibility
+
+  // Display the current score on the screen
+  tft.print(score);  // Print the current score value
 }
 
 void displayStartText() {
@@ -326,57 +329,57 @@ void displayStartText() {
   static bool showText = true;
   static bool melodyStarted = false;
 
-  // Intervalo de tiempo para el parpadeo (250 ms)
+  // Time interval for blinking (250 ms)
   const unsigned long interval = 250;
 
-  // Si ha pasado el tiempo del intervalo, alternar la visibilidad del texto
+  // If the interval time has passed, toggle the text visibility
   if (currentMillis - previousMillis >= interval) {
-    previousMillis = currentMillis;  // Actualizar el tiempo anterior
+    previousMillis = currentMillis;  // Update the previous time
 
-    // Alternar la visibilidad del texto
+    // Toggle the visibility of the text
     showText = !showText;
 
-    // Calcula la posición para centrar el texto "Start"
-    int startX = (tft.width() - 60) / 2; // Posición X para centrar horizontalmente
-    int startY = (tft.height() - 16) / 2; // Posición Y para centrar verticalmente
+    // Calculate the position to center the "Start" text
+    int startX = (tft.width() - 60) / 2; // X position to center horizontally
+    int startY = (tft.height() - 16) / 2; // Y position to center vertically
 
-    // Borra el área donde se muestra el texto "Press to Start"
-    int textWidth = 90; // Ancho aproximado del texto "Press to Start" en píxeles
-    int textHeight = 8; // Altura aproximada del texto "Press to Start" en píxeles
-    int pressStartX = (tft.width() - textWidth) / 2; // Posición X para centrar horizontalmente
-    int pressStartY = startY + 16 + 10; // Posición Y debajo de "Start"
-    tft.fillRect(pressStartX, pressStartY, textWidth, textHeight, 0x0000); // Borra el área donde se muestra el texto "Press to Start"
+    // Clear the area where the "Press to Start" text is shown
+    int textWidth = 90; // Approximate width of the "Press to Start" text in pixels
+    int textHeight = 8; // Approximate height of the "Press to Start" text in pixels
+    int pressStartX = (tft.width() - textWidth) / 2; // X position to center horizontally
+    int pressStartY = startY + 16 + 10; // Y position below "Start"
+    tft.fillRect(pressStartX, pressStartY, textWidth, textHeight, 0x0000); // Clear the area where the "Press to Start" text is shown
 
-    // Muestra el texto "Karen Riveros y Juan Giraldo" en el borde inferior derecho
+    // Display the text "Karen Riveros y Juan Giraldo" in the bottom-right corner
     String names = "Karen Riveros y Juan Giraldo";
-    int textWidth2 = names.length() * 6; // Ancho aproximado del texto en píxeles (cada caracter tiene un ancho aproximado de 6 píxeles)
-    tft.setTextColor(TFT_GREEN); // Color del texto (verde)
-    tft.setTextSize(1); // Tamaño del texto
-    tft.setCursor(tft.width() - textWidth2, tft.height() - 10); // Posición en el borde inferior derecho
+    int textWidth2 = names.length() * 6; // Approximate width of the text in pixels (each character is approximately 6 pixels wide)
+    tft.setTextColor(TFT_GREEN); // Text color (green)
+    tft.setTextSize(1); // Text size
+    tft.setCursor(tft.width() - textWidth2, tft.height() - 10); // Position in the bottom-right corner
     tft.print(names);
 
-    // Muestra el texto "Press to Start" si showText es falso
+    // Display the text "Press to Start" if showText is false
     if (!showText) {
-      tft.setTextColor(0xFFE0); // Color del texto amarillo
-      tft.setTextSize(1); // Tamaño del texto
+      tft.setTextColor(0xFFE0); // Text color yellow
+      tft.setTextSize(1); // Text size
       tft.setCursor(pressStartX, pressStartY);
       tft.print("Press to Start");
     }
 
-    // Si la melodía aún no ha comenzado, inicia la melodía
+    // If the melody has not started yet, start the melody
     if (!melodyStarted) {
-      melodyStarted = true; // Marca que la melodía ha comenzado
-      playMelody(); // Inicia la melodía
+      melodyStarted = true; // Mark that the melody has started
+      playMelody(); // Start the melody
     }
   }
 }
 
 void playMelody() {
-  // Repite la melodía 3 veces (puedes ajustar este número según tu preferencia)
+  // Repeat the melody 5 times (you can adjust this number as per your preference)
   for (int j = 0; j < 5; j++) {
-    // Reproduce la melodía completa
+    // Play the complete melody
     for (int i = 0; i < MELODY_LENGTH; i++) {
-      playNote(MELODY[i], 100); // Duración de cada nota: 100 ms
+      playNote(MELODY[i], 100); // Duration of each note: 100 ms
     }
   }
 }
