@@ -16,4 +16,8 @@
 
 #### Connections Joystick and Buzzer with Arduino
 
-![M](https://github.com/Trex-Codes/Brick_Breacker_TFT/blob/master/images/Arduino_Ball2.png?raw=true)
+![Model 0.2](https://github.com/Trex-Codes/Brick_Breacker_TFT/blob/master/images/Arduino_Ball2.png?raw=true)
+
+#### Physical Model of the proyect
+![Real Mode](https://github.com/Trex-Codes/Brick_Breacker_TFT/blob/master/images/20240524_194350.png?raw=true)
+
